@@ -31,6 +31,19 @@ func DoA2[A0, A1 any](
 	})
 }
 
+func DoA3[A0, A1, A2 any](
+	ctx context.Context,
+	m Doer,
+	fn func(A0, A1, A2),
+	a0 A0,
+	a1 A1,
+	a2 A2,
+) {
+	m.Do(ctx, func() {
+		fn(a0, a1, a2)
+	})
+}
+
 func DoA1R1[A0, R0 any](
 	ctx context.Context,
 	m Doer,
