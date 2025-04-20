@@ -22,7 +22,7 @@ func WithEnableDeadlock(ctx context.Context, enableDeadlock bool) context.Contex
 }
 
 func IsEnableDeadlock(ctx context.Context) bool {
-	v, ok := ctx.Value(CtxKeyNoLogging{}).(bool)
+	v, ok := ctx.Value(CtxKeyEnableDeadlock{}).(bool)
 	if !ok {
 		return true
 	}
