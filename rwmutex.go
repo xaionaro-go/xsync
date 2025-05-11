@@ -59,9 +59,9 @@ func (m *Mutex) ManualLock(ctx context.Context) {
 
 func (m *Mutex) manualLock(ctx context.Context, lockType lockType) {
 	ctx = fixCtx(ctx)
-	noLogging := IsNoLogging(ctx)
+	loggingEnabled := IsLoggingEnabled(ctx)
 	l := logger.FromCtx(ctx)
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("%sing", lockType)
 	}
 	switch lockType {
@@ -72,12 +72,15 @@ func (m *Mutex) manualLock(ctx context.Context, lockType lockType) {
 		m.mutex.RLock()
 	}
 
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("%sed", lockType)
 	}
 }
 
 func (m *Mutex) startDeadlockDetector(ctx context.Context) {
+	if !IsDeadlockDetectorEnabled(ctx) {
+		return
+	}
 	ctx, m.cancelFunc = context.WithCancel(ctx)
 	timeout := time.Minute
 	if m.OverrideTimeout != 0 {
@@ -97,12 +100,10 @@ func (m *Mutex) startDeadlockDetector(ctx context.Context) {
 		allStacks := make([]byte, 1024*1024)
 		n := runtime.Stack(allStacks, true)
 		allStacks = allStacks[:n]
-		if IsEnableDeadlock(ctx) {
-			if m.PanicOnDeadlock == nil || *m.PanicOnDeadlock {
-				logger.Panicf(ctx, "got a deadlock in:\n%s", allStacks)
-			} else {
-				logger.Errorf(ctx, "got a deadlock in:\n%s", allStacks)
-			}
+		if m.PanicOnDeadlock != nil && *m.PanicOnDeadlock {
+			logger.Panicf(ctx, "got a deadlock in:\n%s", allStacks)
+		} else {
+			logger.Errorf(ctx, "got a deadlock in:\n%s", allStacks)
 		}
 	}()
 	m.deadlockNotifier = deadlockNotifier
@@ -118,9 +119,9 @@ func (m *Mutex) ManualTryLock(ctx context.Context) bool {
 
 func (m *Mutex) manualTryLock(ctx context.Context, lockType lockType) bool {
 	ctx = fixCtx(ctx)
-	noLogging := IsNoLogging(ctx)
+	loggingEnabled := IsLoggingEnabled(ctx)
 	l := logger.FromCtx(ctx)
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("Try%sing", lockType)
 	}
 
@@ -135,7 +136,7 @@ func (m *Mutex) manualTryLock(ctx context.Context, lockType lockType) bool {
 		result = m.mutex.TryRLock()
 	}
 
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("Try%sed, result: %v", lockType, result)
 	}
 	return result
@@ -151,9 +152,9 @@ func (m *Mutex) ManualUnlock(ctx context.Context) {
 
 func (m *Mutex) manualUnlock(ctx context.Context, lockType lockType) {
 	ctx = fixCtx(ctx)
-	noLogging := IsNoLogging(ctx)
+	loggingEnabled := IsLoggingEnabled(ctx)
 	l := logger.FromCtx(ctx)
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("un%sing", lockType)
 	}
 
@@ -170,7 +171,7 @@ func (m *Mutex) manualUnlock(ctx context.Context, lockType lockType) {
 		m.mutex.RUnlock()
 	}
 
-	if !noLogging {
+	if loggingEnabled {
 		l.Tracef("un%sed", lockType)
 	}
 }
