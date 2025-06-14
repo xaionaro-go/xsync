@@ -10,6 +10,8 @@ import (
 	"github.com/facebookincubator/go-belt/tool/logger"
 )
 
+var DefaultDeadlockTimeout = time.Minute
+
 type lockType uint
 
 const (
@@ -82,7 +84,7 @@ func (m *Mutex) startDeadlockDetector(ctx context.Context) {
 		return
 	}
 	ctx, m.cancelFunc = context.WithCancel(ctx)
-	timeout := time.Minute
+	timeout := DefaultDeadlockTimeout
 	if m.OverrideTimeout != 0 {
 		timeout = m.OverrideTimeout
 	}
@@ -90,7 +92,7 @@ func (m *Mutex) startDeadlockDetector(ctx context.Context) {
 		return
 	}
 
-	deadlockNotifier := time.NewTimer(time.Minute)
+	deadlockNotifier := time.NewTimer(timeout)
 	go func() {
 		select {
 		case <-ctx.Done():
