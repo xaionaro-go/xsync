@@ -9,7 +9,7 @@ import (
 // TODO: move to a separate package
 type CtxLocker chan struct{}
 
-func (l CtxLocker) Lock(ctx context.Context) bool {
+func (l CtxLocker) ManualLock(ctx context.Context) bool {
 	select {
 	case <-ctx.Done():
 		loggingEnabled := IsLoggingEnabled(ctx)
@@ -22,7 +22,7 @@ func (l CtxLocker) Lock(ctx context.Context) bool {
 	}
 }
 
-func (l CtxLocker) TryLock(ctx context.Context) bool {
+func (l CtxLocker) ManualTryLock(ctx context.Context) bool {
 	select {
 	case <-ctx.Done():
 		loggingEnabled := IsLoggingEnabled(ctx)
@@ -37,10 +37,19 @@ func (l CtxLocker) TryLock(ctx context.Context) bool {
 	}
 }
 
-func (l CtxLocker) Unlock() {
+func (l CtxLocker) ManualUnlock() {
 	select {
 	case <-l:
 	default:
 		panic("not locked!")
 	}
+}
+
+func (l CtxLocker) Do(
+	ctx context.Context,
+	fn func(),
+) {
+	l.ManualLock(ctx)
+	defer l.ManualUnlock()
+	fn()
 }
