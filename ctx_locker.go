@@ -49,7 +49,9 @@ func (l CtxLocker) Do(
 	ctx context.Context,
 	fn func(),
 ) {
-	l.ManualLock(ctx)
+	if !l.ManualLock(ctx) {
+		return
+	}
 	defer l.ManualUnlock()
 	fn()
 }
