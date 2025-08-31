@@ -62,8 +62,8 @@ func (m *Mutex) ManualLock(ctx context.Context) {
 func (m *Mutex) manualLock(ctx context.Context, lockType lockType) {
 	ctx = fixCtx(ctx)
 	loggingEnabled := IsLoggingEnabled(ctx)
-	l := logger.FromCtx(ctx)
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("%sing", lockType)
 	}
 	switch lockType {
@@ -75,6 +75,7 @@ func (m *Mutex) manualLock(ctx context.Context, lockType lockType) {
 	}
 
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("%sed", lockType)
 	}
 }
@@ -122,8 +123,8 @@ func (m *Mutex) ManualTryLock(ctx context.Context) bool {
 func (m *Mutex) manualTryLock(ctx context.Context, lockType lockType) bool {
 	ctx = fixCtx(ctx)
 	loggingEnabled := IsLoggingEnabled(ctx)
-	l := logger.FromCtx(ctx)
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("Try%sing", lockType)
 	}
 
@@ -139,6 +140,7 @@ func (m *Mutex) manualTryLock(ctx context.Context, lockType lockType) bool {
 	}
 
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("Try%sed, result: %v", lockType, result)
 	}
 	return result
@@ -155,8 +157,8 @@ func (m *Mutex) ManualUnlock(ctx context.Context) {
 func (m *Mutex) manualUnlock(ctx context.Context, lockType lockType) {
 	ctx = fixCtx(ctx)
 	loggingEnabled := IsLoggingEnabled(ctx)
-	l := logger.FromCtx(ctx)
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("un%sing", lockType)
 	}
 
@@ -174,6 +176,7 @@ func (m *Mutex) manualUnlock(ctx context.Context, lockType lockType) {
 	}
 
 	if loggingEnabled {
+		l := logger.FromCtx(ctx)
 		l.Tracef("un%sed", lockType)
 	}
 }
