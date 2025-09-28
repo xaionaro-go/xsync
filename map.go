@@ -38,12 +38,13 @@ func (m *Map[K, V]) LoadAndDelete(key K) (V, bool) {
 	return value.(V), true
 }
 func (m *Map[K, V]) LoadOrStore(key K, value V) (V, bool) {
-	actual, loaded := m.Map.LoadOrStore(key, value)
-	if !loaded {
+	loaded, ok0 := m.Map.LoadOrStore(key, value)
+	loadedTyped, ok1 := loaded.(V)
+	if !ok1 {
 		var zeroValue V
-		return zeroValue, false
+		return zeroValue, ok0
 	}
-	return actual.(V), true
+	return loadedTyped, ok0
 }
 
 func (m *Map[K, V]) Range(f func(key K, value V) bool) {
