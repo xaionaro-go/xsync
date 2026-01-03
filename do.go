@@ -1,3 +1,6 @@
+// Package xsync provides synchronization primitives and helpers.
+//
+// do.go defines the Doer interface and generic helpers to execute functions of various signatures under a lock.
 package xsync
 
 import (
@@ -50,9 +53,7 @@ func DoA1R1[A0, R0 any](
 	fn func(A0) R0,
 	a0 A0,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.Do(ctx, func() {
 		r0 = fn(a0)
 	})
@@ -66,9 +67,7 @@ func DoA2R1[A0, A1, R0 any](
 	a0 A0,
 	a1 A1,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.Do(ctx, func() {
 		r0 = fn(a0, a1)
 	})
@@ -83,9 +82,7 @@ func DoA3R1[A0, A1, A2, R0 any](
 	a1 A1,
 	a2 A2,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.Do(ctx, func() {
 		r0 = fn(a0, a1, a2)
 	})
@@ -119,9 +116,7 @@ func DoA4R1[A0, A1, A2, A3, R0 any](
 	a2 A2,
 	a3 A3,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.Do(ctx, func() {
 		r0 = fn(a0, a1, a2, a3)
 	})
@@ -184,9 +179,7 @@ func DoR1[R0 any](
 	m Doer,
 	fn func() R0,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.Do(ctx, func() {
 		r0 = fn()
 	})
@@ -292,9 +285,7 @@ func RDoA1R1[A0, R0 any](
 	fn func(A0) R0,
 	a0 A0,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.RDo(ctx, func() {
 		r0 = fn(a0)
 	})
@@ -308,9 +299,7 @@ func RDoA2R1[A0, A1, R0 any](
 	a0 A0,
 	a1 A1,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.RDo(ctx, func() {
 		r0 = fn(a0, a1)
 	})
@@ -325,9 +314,7 @@ func RDoA3R1[A0, A1, A2, R0 any](
 	a1 A1,
 	a2 A2,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.RDo(ctx, func() {
 		r0 = fn(a0, a1, a2)
 	})
@@ -343,9 +330,7 @@ func RDoA4R1[A0, A1, A2, A3, R0 any](
 	a2 A2,
 	a3 A3,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.RDo(ctx, func() {
 		r0 = fn(a0, a1, a2, a3)
 	})
@@ -408,9 +393,7 @@ func RDoR1[R0 any](
 	m RDoer,
 	fn func() R0,
 ) R0 {
-	var (
-		r0 R0
-	)
+	var r0 R0
 	m.RDo(ctx, func() {
 		r0 = fn()
 	})

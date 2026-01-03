@@ -1,3 +1,5 @@
+// gorex.go provides a wrapper around gorex.Mutex that implements the Doer interface.
+
 package xsync
 
 import (

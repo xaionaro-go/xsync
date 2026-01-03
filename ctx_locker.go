@@ -1,3 +1,5 @@
+// ctx_locker.go implements CtxLocker, a channel-based synchronization primitive that supports context-aware locking.
+
 package xsync
 
 import (
@@ -6,6 +8,7 @@ import (
 	"github.com/facebookincubator/go-belt/tool/logger"
 )
 
+// CtxLocker is a channel-based synchronization primitive that supports context-aware locking.
 // TODO: move to a separate package
 type CtxLocker chan struct{}
 
@@ -37,10 +40,13 @@ func (l CtxLocker) ManualTryLock(ctx context.Context) bool {
 	}
 }
 
-func (l CtxLocker) ManualUnlock() {
+func (l CtxLocker) ManualUnlock(ctx context.Context) {
 	select {
 	case <-l:
 	default:
+		if IsAllowUnlockNotLocked(ctx) {
+			return
+		}
 		panic("not locked!")
 	}
 }
@@ -52,6 +58,6 @@ func (l CtxLocker) Do(
 	if !l.ManualLock(ctx) {
 		return
 	}
-	defer l.ManualUnlock()
+	defer l.ManualUnlock(ctx)
 	fn()
 }

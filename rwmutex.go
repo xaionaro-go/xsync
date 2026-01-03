@@ -1,3 +1,5 @@
+// rwmutex.go implements a context-aware RWMutex with built-in deadlock detection and logging.
+
 package xsync
 
 import (

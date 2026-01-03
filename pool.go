@@ -1,3 +1,5 @@
+// pool.go provides a type-safe, generic wrapper around sync.Pool with support for object resetting and finalizers.
+
 package xsync
 
 import (

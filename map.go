@@ -1,3 +1,5 @@
+// map.go provides a type-safe, generic wrapper around sync.Map.
+
 package xsync
 
 import (
@@ -37,6 +39,7 @@ func (m *Map[K, V]) LoadAndDelete(key K) (V, bool) {
 	}
 	return value.(V), true
 }
+
 func (m *Map[K, V]) LoadOrStore(key K, value V) (V, bool) {
 	loaded, ok0 := m.Map.LoadOrStore(key, value)
 	loadedTyped, ok1 := loaded.(V)
